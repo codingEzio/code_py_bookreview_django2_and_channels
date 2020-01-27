@@ -25,6 +25,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # my own
+    "main.apps.MainConfig",
     # dev
     "django_extensions",
 ]
