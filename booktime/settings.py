@@ -120,3 +120,37 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 # Email
 
 EMAIL_BACKEND = os.getenv("CURRENT_EMAIL_BACKEND")
+
+
+# Logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        # app
+        'main': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        # project
+        'booktime': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True
+        }
+    },
+}
