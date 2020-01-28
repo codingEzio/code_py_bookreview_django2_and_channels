@@ -7,3 +7,9 @@ class TestPage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "home.html")
         self.assertContains(response, "Booktime")
+
+    def test_about_us_page_works(self):
+        response = self.client.get(path="/about-us/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "about_us.html")
+        self.assertContains(response, "Booktime")
