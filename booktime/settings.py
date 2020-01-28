@@ -8,7 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -65,10 +65,16 @@ WSGI_APPLICATION = "booktime.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# Steps:
+# ~1 createuser -dP USER
+# ~2 createdb   -E utf-8 -U USER DATABASE
+# ~3 psql --username=USER --dbname=DATABASE
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRESQL_DB_NAME"),
+        "USER": os.getenv("POSTGRESQL_USER"),
+        "PASSWORD": os.getenv("POSTGRESQL_PASSWORD"),
     }
 }
 
