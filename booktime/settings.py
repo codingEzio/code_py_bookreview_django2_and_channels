@@ -120,37 +120,38 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 # Email
 
 EMAIL_BACKEND = os.getenv("CURRENT_EMAIL_BACKEND")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 
 # Logging
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'simple': {
-            'format': '%(levelname)s %(message)s'
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {"simple": {"format": "%(levelname)s %(message)s"},},
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
         },
     },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        },
-    },
-    'loggers': {
+    "loggers": {
         # app
-        'main': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
+        "main": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
         },
         # project
-        'booktime': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True
-        }
+        "booktime": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
     },
 }
