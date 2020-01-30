@@ -17,6 +17,7 @@ class ProductImage(models.Model):
 
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="product-images")
+    thumbnail = models.ImageField(upload_to="product-thumbnails", null=True)
 
 
 class ProductTag(models.Model):
