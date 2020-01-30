@@ -9,3 +9,10 @@ class Product(models.Model):
     active = models.BooleanField(default=True)
     in_stock = models.BooleanField(default=True)
     date_updated = models.DateTimeField(auto_now=True)
+
+
+class ProductImage(models.Model):
+    """This model requires 'Pillow' installed first.
+    """
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="product-images")
