@@ -9,7 +9,7 @@ class ActiveManager(models.Manager):
 class Product(models.Model):
     objects = ActiveManager()
 
-    name = models.CharField(max_length=32)
+    name = models.CharField(max_length=40)
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     slug = models.SlugField(max_length=48)
@@ -29,7 +29,7 @@ class ProductImage(models.Model):
 
 class ProductTag(models.Model):
     products = models.ManyToManyField(to=Product, blank=True)
-    name = models.CharField(max_length=32)
+    name = models.CharField(max_length=40)
     slug = models.SlugField(max_length=48)
     description = models.TextField(blank=True)
     active = models.BooleanField(default=True)
