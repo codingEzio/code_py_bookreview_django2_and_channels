@@ -20,7 +20,6 @@ class ProductTagAdmin(admin.ModelAdmin):
     list_filter = ("active",)
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
-    autocomplete_fields = ("products",)
 
 
 class ProductImageAdmin(admin.ModelAdmin):
