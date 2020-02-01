@@ -1,7 +1,7 @@
 from django.urls import path
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView
 
-from main import views
+from main import views, models
 
 app_name = "main"
 
@@ -10,6 +10,11 @@ urlpatterns = [
         route="products/<slug:tag>/",
         view=views.ProductListView.as_view(),
         name="products",
+    ),
+    path(
+        route="product/<slug:slug>/",
+        view=DetailView.as_view(model=models.Product),
+        name="product",
     ),
     path(
         route="contact-us/",
