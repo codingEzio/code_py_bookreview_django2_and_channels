@@ -7,6 +7,11 @@ app_name = "main"
 
 urlpatterns = [
     path(
+        route="products/<slug:tag>/",
+        view=views.ProductListView.as_view(),
+        name="products",
+    ),
+    path(
         route="contact-us/",
         view=views.ContactUsView.as_view(),
         name="contact_us",
