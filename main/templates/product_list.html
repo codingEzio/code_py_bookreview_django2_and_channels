@@ -6,7 +6,7 @@
     {% for prod in page_obj %}
         <p>{{ prod.name }}</p>
         <p>
-            <a href="{% url 'main:products' prod.slug %}">See it here</a>
+            <a href="{% url 'main:product' prod.slug %}">See it here</a>
         </p>
         <p>
             {% if not forloop.last %}<hr/>{% endif %}
