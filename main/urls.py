@@ -17,6 +17,11 @@ urlpatterns = [
         name="product",
     ),
     path(
+        route="signup/",
+        view=views.SignupView.as_view(),
+        name="signup",
+    ),
+    path(
         route="contact-us/",
         view=views.ContactUsView.as_view(),
         name="contact_us",
