@@ -155,3 +155,9 @@ LOGGING = {
         },
     },
 }
+
+
+# Custom user model (use email only instead of username)
+
+# Use our own version of `User` model
+AUTH_USER_MODEL = "main.User"
