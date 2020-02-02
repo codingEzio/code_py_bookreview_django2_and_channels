@@ -12,6 +12,7 @@ from main import models
 class TestPage(TestCase):
     TEST_SIGNUP_EMAIL = "guest@booktime.com"
     TEST_SIGNUP_PASSWORD = "abcabcabc"
+    HTTP_STATUS_CODE_302_REDIRECT = 302
 
     def test_home_page_works(self):
         response = self.client.get(path=reverse("main:index"))
@@ -111,7 +112,9 @@ class TestPage(TestCase):
                 path=reverse("main:signup"), data=post_data
             )
 
-            self.assertEqual(response.status_code, 302)
+            self.assertEqual(
+                response.status_code, self.HTTP_STATUS_CODE_302_REDIRECT
+            )
             self.assertTrue(
                 models.User.objects.filter(
                     email=self.TEST_SIGNUP_EMAIL
