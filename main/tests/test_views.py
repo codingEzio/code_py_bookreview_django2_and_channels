@@ -1,13 +1,18 @@
 from decimal import Decimal
+from unittest.mock import patch
 
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib import auth
 
 from main import forms
 from main import models
 
 
 class TestPage(TestCase):
+    TEST_SIGNUP_EMAIL = "guest@booktime.com"
+    TEST_SIGNUP_PASSWORD = "abcabcabc"
+
     def test_home_page_works(self):
         response = self.client.get(path=reverse("main:index"))
         self.assertEqual(response.status_code, 200)
@@ -84,3 +89,34 @@ class TestPage(TestCase):
         self.assertEqual(
             list(response.context["object_list"]), list(product_list)
         )
+
+    def test_user_signup_page_loads_correctly(self):
+        response = self.client.get(reverse(viewname="main:signup"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "signup.html")
+        self.assertContains(response, "Booktime")
+        self.assertIsInstance(response.context["form"], forms.UserCreationForm)
+
+    def test_user_signup_page_submission_works(self):
+        post_data = {
+            "email": self.TEST_SIGNUP_EMAIL,
+            "password1": self.TEST_SIGNUP_PASSWORD,
+            "password2": self.TEST_SIGNUP_PASSWORD,
+        }
+        with patch.object(
+            target=forms.UserCreationForm, attribute="send_mail"
+        ) as mock_send_mail:
+            response = self.client.post(
+                path=reverse("main:signup"), data=post_data
+            )
+
+            self.assertEqual(response.status_code, 302)
+            self.assertTrue(
+                models.User.objects.filter(
+                    email=self.TEST_SIGNUP_EMAIL
+                ).exists()
+            )
+            self.assertTrue(auth.get_user(self.client).is_authenticated)
+
+            mock_send_mail.assert_called_once()
