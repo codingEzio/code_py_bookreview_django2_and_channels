@@ -26,6 +26,8 @@ class TestPage(TestCase):
     TEST_ADDRESS_POSTAL_CODE = "EH99 1SP"
     ADDRESS_LIST_VIEW_CONTEXT_OBJECT_NAME = "address_list"  # not `object_list`
 
+    URL_ADD_TO_BASKET = "main:add_to_basket"
+
     def test_home_page_works(self):
         response = self.client.get(path=reverse("main:index"))
         self.assertEqual(response.status_code, 200)
@@ -193,3 +195,37 @@ class TestPage(TestCase):
         )
 
         self.assertTrue(models.Address.objects.filter(user=user1).exists())
+
+    def test_add_to_basket_loggedin_works(self):
+        user1 = models.User.objects.create_user(
+            email=self.TEST_SIGNUP_EMAIL, password=self.TEST_SIGNUP_PASSWORD
+        )
+        prod1 = models.Product.objects.create(
+            name="Zero to One", slug="zero-to-one", price=Decimal("13.50"),
+        )
+        prod2 = models.Product.objects.create(
+            name="Climate Leviathan", slug="climate-leviathan", price="20.00",
+        )
+
+        self.client.force_login(user=user1)
+        response = self.client.get(
+            path=reverse(viewname=self.URL_ADD_TO_BASKET),
+            data={"product_id": prod1.id},
+        )
+        response = self.client.get(
+            path=reverse(viewname=self.URL_ADD_TO_BASKET),
+            data={"product_id": prod1.id},
+        )
+
+        self.assertTrue(models.Basket.objects.filter(user=user1).exists())
+        self.assertEquals(
+            models.BasketLine.objects.filter(basket__user=user1).count(), 1
+        )
+
+        response = self.client.get(
+            path=reverse(viewname=self.URL_ADD_TO_BASKET),
+            data={"product_id": prod2.id},
+        )
+        self.assertEquals(
+            models.BasketLine.objects.filter(basket__user=user1).count(), 2,
+        )
