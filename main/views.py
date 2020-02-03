@@ -12,7 +12,8 @@ from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from django.http import HttpResponseRedirect
 
 from main import forms
 from main import models
@@ -165,3 +166,31 @@ class AddressDeleteView(LoginRequiredMixin, DeleteView):
         Limit what users could see (their own addresses only).
         """
         return self.model.objects.filter(user=self.request.user)
+
+
+def add_to_basket(request):
+    product = get_object_or_404(
+        models.Product, pk=request.GET.get("product_id")
+    )
+    basket = request.basket
+
+    if not request.basket:
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user = None
+
+        basket = models.Basket.objects.create(user=user)
+        request.session["basket_id"] = basket.id
+
+    basketline, created = models.BasketLine.objects.get_or_create(
+        basket=basket, product=product
+    )
+
+    if not created:
+        basketline.quantity += 1
+        basketline.save()
+
+    return HttpResponseRedirect(
+        redirect_to=reverse(viewname="main:product", args=(product.slug,))
+    )

@@ -7,6 +7,10 @@ from main import views, models, forms
 app_name = "main"
 
 urlpatterns = [
+    # Basket
+    path(
+        route="add_to_basket/", view=views.add_to_basket, name="add_to_basket",
+    ),
     # Product
     path(
         route="products/<slug:tag>/",
