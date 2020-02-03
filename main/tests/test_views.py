@@ -27,6 +27,7 @@ class TestPage(TestCase):
     ADDRESS_LIST_VIEW_CONTEXT_OBJECT_NAME = "address_list"  # not `object_list`
 
     URL_ADD_TO_BASKET = "main:add_to_basket"
+    URL_LOGIN = "main:login"
 
     def test_home_page_works(self):
         response = self.client.get(path=reverse("main:index"))
@@ -229,3 +230,37 @@ class TestPage(TestCase):
         self.assertEquals(
             models.BasketLine.objects.filter(basket__user=user1).count(), 2,
         )
+
+    def test_add_to_basket_login_merge_works(self):
+        # TODO Make sure there wasn't any issues (test passed but not enough).
+        user1 = models.User.objects.create_user(
+            email=self.TEST_SIGNUP_EMAIL, password=self.TEST_SIGNUP_PASSWORD
+        )
+        prod1 = models.Product.objects.create(
+            name="Zero to One", slug="zero-to-one", price=Decimal("13.50"),
+        )
+        prod2 = models.Product.objects.create(
+            name="Climate Leviathan", slug="climate-leviathan", price="20.00",
+        )
+
+        basket = models.Basket.objects.create(user=user1)
+        models.BasketLine.objects.create(
+            basket=basket, product=prod1, quantity=2
+        )
+
+        response = self.client.get(
+            path=reverse(viewname=self.URL_ADD_TO_BASKET),
+            data={"product_id": prod2.id},
+        )
+        response = self.client.post(
+            path=reverse(viewname=self.URL_LOGIN),
+            data={
+                "email": self.TEST_SIGNUP_EMAIL,
+                "password": self.TEST_SIGNUP_PASSWORD,
+            },
+        )
+        self.assertTrue(auth.get_user(self.client).is_authenticated)
+        self.assertTrue(models.Basket.objects.filter(user=user1).exists())
+
+        basket = models.Basket.objects.get(user=user1)
+        self.assertEquals(basket.count(), 3)
