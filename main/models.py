@@ -130,6 +130,9 @@ class Address(models.Model):
     )
     postal_code = models.CharField(verbose_name="Postal code", max_length=12)
     city = models.CharField(max_length=60)
+
+    # How to get the actual items in the template?
+    # e.g. {{ INSTANCE.get_MODELFIELD_display }}
     country = models.CharField(max_length=2, choices=SUPPORTED_COUNTRIES)
 
     def __str__(self):
