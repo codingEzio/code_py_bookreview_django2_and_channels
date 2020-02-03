@@ -43,9 +43,7 @@
         </tr>
     </table>
 
-    {% comment %}
-    <a href="{% url 'add_to_basket' %}?product_id={{ object.id }}">
+    <a href="{% url 'main:add_to_basket' %}?product_id={{ object.id }}">
         Add to basket
     </a>
-    {% endcomment %}
 {% endblock content %}
