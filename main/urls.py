@@ -7,6 +7,7 @@ from main import views, models, forms
 app_name = "main"
 
 urlpatterns = [
+    # Product
     path(
         route="products/<slug:tag>/",
         view=views.ProductListView.as_view(),
@@ -17,6 +18,28 @@ urlpatterns = [
         view=DetailView.as_view(model=models.Product),
         name="product",
     ),
+    # Product Address
+    path(
+        route="address/",
+        view=views.AddressListView.as_view(),
+        name="address_list",
+    ),
+    path(
+        route="address/create/",
+        view=views.AddressCreateView.as_view(),
+        name="address_create",
+    ),
+    path(
+        route="address/<int:pk>/",
+        view=views.AddressUpdateView.as_view(),
+        name="address_update",
+    ),
+    path(
+        route="address/<int:pk>/delete/",
+        view=views.AddressDeleteView.as_view(),
+        name="address_delete",
+    ),
+    # Auth
     path(route="signup/", view=views.SignupView.as_view(), name="signup",),
     path(
         route="login/",
@@ -25,6 +48,7 @@ urlpatterns = [
         ),
         name="login",
     ),
+    # Base
     path(
         route="contact-us/",
         view=views.ContactUsView.as_view(),
