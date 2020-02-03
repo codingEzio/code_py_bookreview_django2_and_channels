@@ -42,6 +42,9 @@
     {% endfor %}
 
     {% block content %}
+        {% if request.basket %}
+            {{ request.basket.count }} items in basket
+        {% endif %}
     {% endblock content %}
 
     <script src="{% static 'app_main/js/jquery.min.js' %}"></script>
