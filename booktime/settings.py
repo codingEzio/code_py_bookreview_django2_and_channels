@@ -161,3 +161,8 @@ LOGGING = {
 
 # Use our own version of `User` model
 AUTH_USER_MODEL = "main.User"
+
+
+# LoginView settings
+
+LOGIN_REDIRECT_URL = "/"
