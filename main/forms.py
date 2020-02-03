@@ -11,6 +11,7 @@ from django.contrib.auth.forms import (
 from django.contrib.auth import authenticate
 
 from . import models
+from . import widgets
 
 
 logger = logging.getLogger(__name__)
@@ -23,6 +24,7 @@ BasketLineFormSet = inlineformset_factory(
     model=models.BasketLine,
     fields=("quantity",),
     extra=0,
+    widgets={"quantity": widgets.PlusMinusNumberInput()},
 )
 
 
