@@ -40,6 +40,7 @@ def generate_thumbnail(sender, instance, **kwargs):
 def merge_baskets_if_found(sender, user, request, **kwargs):
     """
     Part of the job was done by our own middleware (basket_middleware).
+    #TODO Fully test it, make sure there wasn't any issues.
     """
     anonymous_basket = getattr(request, "basket", None)
     if anonymous_basket:
