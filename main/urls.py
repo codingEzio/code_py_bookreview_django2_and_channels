@@ -11,6 +11,7 @@ urlpatterns = [
     path(
         route="add_to_basket/", view=views.add_to_basket, name="add_to_basket",
     ),
+    path(route="basket/", view=views.manage_basket, name="basket"),
     # Product
     path(
         route="products/<slug:tag>/",

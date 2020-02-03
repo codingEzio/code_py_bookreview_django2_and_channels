@@ -9,7 +9,7 @@ from django.views.generic.edit import (
 )
 from django.views.generic.list import ListView
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
@@ -193,4 +193,39 @@ def add_to_basket(request):
 
     return HttpResponseRedirect(
         redirect_to=reverse(viewname="main:product", args=(product.slug,))
+    )
+
+
+def manage_basket(request):
+    # No baskets yet
+    if not request.basket:
+        return render(
+            request=request,
+            template_name="basket.html",
+            context={"formset": None},
+        )
+
+    if request.method == "POST":
+        formset = forms.BasketLineFormSet(
+            request.POST, instance=request.basket
+        )
+
+        if formset.is_valid():
+            formset.save()
+    else:
+        formset = forms.BasketLineFormSet(instance=request.basket)
+
+    # Do "have" basket but nothing was added yet
+    if request.basket.is_empty():
+        return render(
+            request=request,
+            template_name="basket.html",
+            context={"formset": None},
+        )
+
+    # Basket with some products
+    return render(
+        request=request,
+        template_name="basket.html",
+        context={"formset": formset},
     )
