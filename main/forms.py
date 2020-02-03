@@ -2,6 +2,7 @@ import logging
 from os import getenv
 
 from django import forms
+from django.forms import inlineformset_factory
 from django.core.mail import send_mail
 from django.contrib.auth.forms import (
     UserCreationForm as DjangoUserCreationForm,
@@ -13,6 +14,16 @@ from . import models
 
 
 logger = logging.getLogger(__name__)
+
+
+# This formset is used to build forms for all basket lines that connected to
+# the basket specified.
+BasketLineFormSet = inlineformset_factory(
+    parent_model=models.Basket,
+    model=models.BasketLine,
+    fields=("quantity",),
+    extra=0,
+)
 
 
 class ContactForm(forms.Form):
