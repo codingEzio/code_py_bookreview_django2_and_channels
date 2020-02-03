@@ -10,9 +10,21 @@ from main import models
 
 
 class TestPage(TestCase):
-    TEST_SIGNUP_EMAIL = "guest@booktime.com"
-    TEST_SIGNUP_PASSWORD = "abcabcabc"
     HTTP_STATUS_CODE_302_REDIRECT = 302
+    EMAIL_SUFFIX = "@booktime.com"
+    TEST_SIGNUP_EMAIL = f"guest{EMAIL_SUFFIX}"
+    TEST_SIGNUP_PASSWORD = "abcabcabc"
+
+    TEST_ADDRESS_USER_ONE = "marcus"
+    TEST_ADDRESS_USER_TWO = "ronan"
+    TEST_ADDRESS_USER_ONE_PASSWORD = TEST_SIGNUP_PASSWORD
+    TEST_ADDRESS_USER_TWO_PASSWORD = TEST_SIGNUP_PASSWORD
+    TEST_ADDRESS_ONE = "Edinburgh EH99 1SP, United Kingdom"
+    TEST_ADDRESS_TWO = TEST_ADDRESS_ONE
+    TEST_COUNTRY = "uk"
+    TEST_CITY = "Edinburgh"
+    TEST_ADDRESS_POSTAL_CODE = "EH99 1SP"
+    ADDRESS_LIST_VIEW_CONTEXT_OBJECT_NAME = "address_list"  # not `object_list`
 
     def test_home_page_works(self):
         response = self.client.get(path=reverse("main:index"))
@@ -123,3 +135,61 @@ class TestPage(TestCase):
             self.assertTrue(auth.get_user(self.client).is_authenticated)
 
             mock_send_mail.assert_called_once()
+
+    def test_address_list_page_returns_only_owned(self):
+        user1 = models.User.objects.create_user(
+            email=f"{self.TEST_ADDRESS_USER_ONE}{self.EMAIL_SUFFIX}",
+            password=self.TEST_ADDRESS_USER_ONE_PASSWORD,
+        )
+        user2 = models.User.objects.create_user(
+            email=f"{self.TEST_ADDRESS_USER_TWO}{self.EMAIL_SUFFIX}",
+            password=self.TEST_ADDRESS_USER_TWO_PASSWORD,
+        )
+        models.Address.objects.create(
+            user=user1,
+            name=self.TEST_ADDRESS_USER_ONE,
+            address1=self.TEST_ADDRESS_ONE,
+            address2=self.TEST_ADDRESS_TWO,
+            city=self.TEST_CITY,
+            country=self.TEST_COUNTRY,
+        )
+        models.Address.objects.create(
+            user=user2,
+            name=self.TEST_ADDRESS_USER_TWO,
+            address1=self.TEST_ADDRESS_ONE,
+            address2=self.TEST_ADDRESS_TWO,
+            city=self.TEST_CITY,
+            country=self.TEST_COUNTRY,
+        )
+
+        self.client.force_login(user=user2)
+
+        response = self.client.get(path=reverse(viewname="main:address_list"))
+        self.assertEqual(response.status_code, 200)
+
+        address_list = models.Address.objects.filter(user=user2)
+        self.assertEqual(
+            list(response.context[self.ADDRESS_LIST_VIEW_CONTEXT_OBJECT_NAME]),
+            list(address_list),
+        )
+
+    def test_address_create_stores_user(self):
+        user1 = models.User.objects.create_user(
+            email=f"{self.TEST_ADDRESS_USER_ONE}{self.EMAIL_SUFFIX}",
+            password=self.TEST_ADDRESS_USER_ONE_PASSWORD,
+        )
+        post_data = {
+            "name": self.TEST_ADDRESS_USER_ONE,
+            "address1": self.TEST_ADDRESS_ONE,
+            "address2": self.TEST_ADDRESS_TWO,
+            "postal_code": self.TEST_ADDRESS_POSTAL_CODE,
+            "city": self.TEST_CITY,
+            "country": self.TEST_COUNTRY,
+        }
+
+        self.client.force_login(user=user1)
+        self.client.post(
+            path=reverse(viewname="main:address_create"), data=post_data
+        )
+
+        self.assertTrue(models.Address.objects.filter(user=user1).exists())
