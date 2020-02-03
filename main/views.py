@@ -1,10 +1,18 @@
 import logging
 
-from django.views.generic.edit import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import (
+    FormView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
 from django.views.generic.list import ListView
+
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
+from django.urls import reverse_lazy
 
 from main import forms
 from main import models
@@ -60,6 +68,7 @@ class SignupView(FormView):
     """
     A signup view built based on customized version of UserCreationForm.
     """
+
     template_name = "signup.html"
     form_class = forms.UserCreationForm  # my own version of it
 
@@ -86,3 +95,73 @@ class SignupView(FormView):
         )
 
         return response
+
+
+class AddressListView(LoginRequiredMixin, ListView):
+    """
+    The name of the templates should conform to the parent views.
+    """
+
+    model = models.Address
+    context_object_name = "address_list"  # default: object_list
+
+    def get_queryset(self):
+        """
+        Limit what users could see (their own addresses only).
+        """
+        return self.model.objects.filter(user=self.request.user)
+
+
+class AddressCreateView(LoginRequiredMixin, CreateView):
+    """
+    The name of the templates should conform to the parent views.
+    """
+
+    model = models.Address
+
+    fields = ["name", "address1", "address2", "postal_code", "city", "country"]
+    success_url = reverse_lazy(viewname="main:address_list")
+
+    def form_valid(self, form):
+        """
+        Add one more thing (user) to the form.
+        """
+        obj = form.save(commit=False)
+
+        obj.user = self.request.user
+        obj.save()
+
+        return super().form_valid(form)
+
+
+class AddressUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    The name of the templates should conform to the parent views.
+    """
+
+    model = models.Address
+
+    fields = ["name", "address1", "address2", "postal_code", "city", "country"]
+    success_url = reverse_lazy(viewname="main:address_list")
+
+    def get_queryset(self):
+        """
+        Limit what users could see (their own addresses only).
+        """
+        return self.model.objects.filter(user=self.request.user)
+
+
+class AddressDeleteView(LoginRequiredMixin, DeleteView):
+    """
+    The name of the templates should conform to the parent views.
+    """
+
+    model = models.Address
+
+    success_url = reverse_lazy(viewname="main:address_list")
+
+    def get_queryset(self):
+        """
+        Limit what users could see (their own addresses only).
+        """
+        return self.model.objects.filter(user=self.request.user)
