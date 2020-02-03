@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.core.validators import MinValueValidator
 
 
 class ActiveManager(models.Manager):
@@ -146,3 +147,35 @@ class Address(models.Model):
                 self.country,
             ]
         )
+
+
+class Basket(models.Model):
+    """
+    Also known as 'Shopping Cart', the cornerstone of e-commerce site.
+    """
+
+    OPEN = 10
+    SUBMITTED = 20
+    STATUSES = ((OPEN, "Open"), (SUBMITTED, "Submitted"))
+
+    user = models.ForeignKey(
+        to=User, on_delete=models.CASCADE, blank=True, null=True
+    )
+    status = models.IntegerField(choices=STATUSES, default=OPEN)
+
+    def is_empty(self):
+        return self.basketline_set.all().count == 0
+
+    def count(self):
+        return sum(bl.quantity for bl in self.basketline_set.all())
+
+
+class BasketLine(models.Model):
+    """
+    Represent specfic product and its quantity in the basket.
+    """
+    basket = models.ForeignKey(to=Basket, on_delete=models.CASCADE)
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(
+        default=1, validators=[MinValueValidator(1)]
+    )
