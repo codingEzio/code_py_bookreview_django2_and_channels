@@ -114,3 +114,32 @@ class ProductImage(models.Model):
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="product-images")
     thumbnail = models.ImageField(upload_to="product-thumbnails", null=True)
+
+
+class Address(models.Model):
+    SUPPORTED_COUNTRIES = (
+        ("uk", "United Kingdom"),
+        ("us", "United States of America"),
+    )
+
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=60)
+    address1 = models.CharField(verbose_name="Address line 1", max_length=60)
+    address2 = models.CharField(
+        verbose_name="Address line 2", max_length=60, blank=True
+    )
+    postal_code = models.CharField(verbose_name="Postal code", max_length=12)
+    city = models.CharField(max_length=60)
+    country = models.CharField(max_length=2, choices=SUPPORTED_COUNTRIES)
+
+    def __str__(self):
+        return ", ".join(
+            [
+                self.name,
+                self.address1,
+                self.address2,
+                self.postal_code,
+                self.city,
+                self.country,
+            ]
+        )
