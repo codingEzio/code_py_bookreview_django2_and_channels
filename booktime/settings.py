@@ -29,9 +29,11 @@ INSTALLED_APPS = [
     "main.apps.MainConfig",
     # dev
     "django_extensions",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -167,3 +169,12 @@ AUTH_USER_MODEL = "main.User"
 # LoginView settings
 
 LOGIN_REDIRECT_URL = "/"
+
+
+def show_toolbar(request):
+    return True
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+}

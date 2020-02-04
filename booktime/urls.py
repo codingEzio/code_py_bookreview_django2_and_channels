@@ -9,7 +9,13 @@ urlpatterns = [
     path(route="", view=include("main.urls")),
 ]
 
-if settings.DEBUG is True:
+if settings.DEBUG:
+    import debug_toolbar
+
     urlpatterns += static(
         prefix=settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
     )
+
+    urlpatterns += [
+        path("__debug__/", include(debug_toolbar.urls)),
+    ]
