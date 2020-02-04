@@ -10,8 +10,8 @@ def basket_middleware(get_response):
     improved version which is written by 'Spartak-Belov-Floresku' (the link:
     https://github.com/Spartak-Belov-Floresku/practical-django2-and-channels2).
 
-    I did found that there were still some issues.
-    #TODO Make sure there wasn't any issues.
+    Some of the issues might actually caused by the browsers' cache, do clean
+    it up before testing this!
     """
 
     def middleware(request):
@@ -24,7 +24,6 @@ def basket_middleware(get_response):
                 basket = models.Basket.objects.get(id=basket_id)
                 request.basket = basket
             except Exception as err:
-                logger.error(f"Error: {err}\n")
 
                 try:
                     basket = models.Basket.objects.get(
@@ -32,8 +31,6 @@ def basket_middleware(get_response):
                     )
                     request.basket = basket
                 except Exception as err:
-                    logger.error(f"Error: {err}\n")
-
                     del request.session["basket_id"]
         else:
             try:
@@ -42,8 +39,6 @@ def basket_middleware(get_response):
                 )
                 request.basket = basket
             except Exception as err:
-                logger.error(f"Error: {err}\n")
-
                 request.basket = None
 
         response = get_response(request)
