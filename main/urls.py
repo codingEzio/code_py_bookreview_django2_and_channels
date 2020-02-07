@@ -7,6 +7,12 @@ from main import views, models, forms
 app_name = "main"
 
 urlpatterns = [
+    # Order
+    path(
+        route="order/done/",
+        view=TemplateView.as_view(template_name="order_done.html"),
+        name="checkout_done",
+    ),
     # Basket
     path(
         route="add_to_basket/", view=views.add_to_basket, name="add_to_basket",
@@ -43,6 +49,11 @@ urlpatterns = [
         route="address/<int:pk>/delete/",
         view=views.AddressDeleteView.as_view(),
         name="address_delete",
+    ),
+    path(
+        route="order/address_select/",
+        view=views.AddressSelectonView.as_view(),
+        name="address_select",
     ),
     # Auth
     path(route="signup/", view=views.SignupView.as_view(), name="signup",),
