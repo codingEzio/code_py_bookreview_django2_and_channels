@@ -1,6 +1,12 @@
+import logging
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.validators import MinValueValidator
+
+from main import exceptions
+
+logger = logging.getLogger(name=__name__)
 
 
 class ActiveManager(models.Manager):
@@ -168,6 +174,66 @@ class Basket(models.Model):
 
     def count(self):
         return sum(bl.quantity for bl in self.basketline_set.all())
+
+    def create_order(self, billing_address, shipping_address):
+        """
+        The "check out" flow:
+        1. Logging info about basket and addresses
+        2. Creating Order instance      (one record, mostly info)
+        3. Creating OrderLine instances (multiple records, actual products)
+        4. Logging info about order and the amounts of products were bought
+        5. Mark the process of the "basket"'s side has end (and.. save the obj)
+        """
+        if not self.user:
+            raise exceptions.BasketException(
+                "Cannot create order without user!"
+            )
+
+        logger.info(
+            f"Creating order for basket_id={self.id}, "
+            f"shipping_address={shipping_address.id}, "
+            f"billing_address={billing_address.id}"
+        )
+
+        order_data = {
+            "user": self.user,
+            "billing_name": billing_address.name,
+            "billing_address1": billing_address.address1,
+            "billing_address2": billing_address.address2,
+            "billing_postal_code": billing_address.postal_code,
+            "billing_city": billing_address.city,
+            "billing_country": billing_address.country,
+            "shipping_name": shipping_address.name,
+            "shipping_address1": shipping_address.address1,
+            "shipping_address2": shipping_address.address2,
+            "shipping_postal_code": shipping_address.postal_code,
+            "shipping_city": shipping_address.city,
+            "shipping_country": shipping_address.country,
+        }
+        order = Order.objects.create(**order_data)
+
+        # For the BasketLine part, we're simply inserting the records line by
+        # line.
+        lines_count = 0
+        for basket_line in self.basketline_set.all():
+            for item in range(basket_line.quantity):
+                order_line_data = {
+                    "order": order,
+                    "product": basket_line.product,
+                }
+                order_line = OrderLine.objects.create(**order_line_data)
+                lines_count += 1
+
+        logger.info(
+            f"Created order with id={order.id} and lines_count={lines_count}"
+        )
+
+        # Mark the process of the "basket"'s side has ended (), the actual
+        # payment can be implemented in the `Order` model.
+        self.status = Basket.SUBMITTED
+        self.save()
+
+        return order
 
 
 class BasketLine(models.Model):
