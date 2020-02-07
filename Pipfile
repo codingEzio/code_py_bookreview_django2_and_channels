@@ -11,6 +11,7 @@ python-dotenv = "==0.10.3"
 Pillow = "==7.0.0"
 ipython = "==7.11.1"
 django-debug-toolbar = "==2.2"
+selenium = "==3.141.0"
 
 [packages]
 django = "==2.2.7"
