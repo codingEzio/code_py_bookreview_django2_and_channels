@@ -168,6 +168,34 @@ class AddressDeleteView(LoginRequiredMixin, DeleteView):
         return self.model.objects.filter(user=self.request.user)
 
 
+class AddressSelectonView(LoginRequiredMixin, FormView):
+    template_name = "address_select.html"
+    form_class = forms.AddressSelectionForm
+    success_url = reverse_lazy(viewname="main:checkout_done")
+
+    def get_form_kwargs(self):
+        """
+        We extracts the user from the request and returns it in a dictionary.
+        Then the form (AddressSelectionForm) would receive the `user` for
+        further uses.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+
+        return kwargs
+
+    def form_valid(self, form):
+        del self.request.session["basket_id"]
+
+        basket = self.request.basket
+        basket.create_order(
+            billing_address=form.cleaned_data["billing_address"],
+            shipping_address=form.cleaned_data["shipping_address"],
+        )
+
+        return super().form_valid(form)
+
+
 def add_to_basket(request):
     product = get_object_or_404(
         models.Product, pk=request.GET.get("product_id")

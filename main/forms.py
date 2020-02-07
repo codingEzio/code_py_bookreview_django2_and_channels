@@ -110,3 +110,19 @@ class AuthenticationForm(forms.Form):
         I guess this method would be used by 'LoginView' in the urls.py?
         """
         return self.user
+
+
+class AddressSelectionForm(forms.Form):
+    # You can actually assign a queryset object to them as the "choices".
+    billing_address = forms.ModelChoiceField(queryset=None)
+    shipping_address = forms.ModelChoiceField(queryset=None)
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # We would receive the param `user` from the view (get_from_kwargs).
+        queryset = models.Address.objects.filter(user=user)
+
+        # The attribute `queryset` was evaluated when the form is rendered
+        self.fields["billing_address"].queryset = queryset
+        self.fields["shipping_address"].queryset = queryset
