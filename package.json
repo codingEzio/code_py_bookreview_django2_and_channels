@@ -5,8 +5,15 @@
     "private": true,
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "jest",
         "build": "webpack"
+    },
+    "jest": {
+        "moduleDirectories": [
+            "node_modules",
+            "frontend"
+        ],
+        "testURL": "http://localhost/"
     },
     "repository": {
         "type": "git",
