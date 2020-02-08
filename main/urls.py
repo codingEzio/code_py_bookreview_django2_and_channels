@@ -50,10 +50,16 @@ urlpatterns = [
         view=views.AddressDeleteView.as_view(),
         name="address_delete",
     ),
+    # Order
     path(
         route="order/address_select/",
         view=views.AddressSelectonView.as_view(),
         name="address_select",
+    ),
+    path(
+        route="order-dashboard/",
+        view=views.OrderView.as_view(),
+        name="order_dashboard",
     ),
     # Auth
     path(route="signup/", view=views.SignupView.as_view(), name="signup",),

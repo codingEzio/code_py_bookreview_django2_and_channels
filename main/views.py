@@ -1,19 +1,24 @@
 import logging
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import (
     FormView,
     CreateView,
     UpdateView,
     DeleteView,
 )
-from django.views.generic.list import ListView
 
+from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
+from django import forms as django_forms
+from django.db import models as django_models
+
+import django_filters
+from django_filters.views import FilterView
 
 from main import forms
 from main import models
@@ -257,3 +262,47 @@ def manage_basket(request):
         template_name="basket.html",
         context={"formset": formset},
     )
+
+
+class DateInput(django_forms.DateInput):
+    """
+    The format would respects format localization (e.g. 02/02/2020).
+    """
+
+    input_type = "date"
+
+
+class OrderFilter(django_filters.FilterSet):
+    """
+    Basically, django-filter allows users to filter down a query set based on
+    a model's fields, AND displaying the form to let them do this.
+    """
+
+    class Meta:
+        model = models.Order
+
+        fields = {
+            "user__email": ["icontains"],
+            "status": ["exact"],
+            "date_updated": ["gt", "lt"],
+            "date_added": ["gt", "lt"],
+        }
+        filter_overrides = {
+            django_models.DateTimeField: {
+                "filter_class": django_filters.DateFilter,
+                "extra": lambda f: {"widget": DateInput},
+            }
+        }
+
+
+class OrderView(UserPassesTestMixin, FilterView):
+    """
+    We didn't specify the template's location cuz django-filter has its own
+    convention, i.e. '<app>/<model>_filter.html' ('order_filter' in our case).
+    """
+
+    filterset_class = OrderFilter  # attribute of FilterView
+    login_url = reverse_lazy(viewname="main:login")
+
+    def test_func(self):
+        return self.request.user.is_staff is True
