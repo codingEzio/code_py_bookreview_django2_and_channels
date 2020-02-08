@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load render_bundle from webpack_loader %}
 
 {% block content %}
     <h1>Product</h1>
@@ -52,7 +53,9 @@
     <script src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
 
-    <script>
+    {% render_bundle "imageSwitcher" "js" %}
+
+    <script type="module">
     document.addEventListener("DOMContentLoaded", function (event) {
         var images = [
             {% for image in object.productimage_set.all %}
