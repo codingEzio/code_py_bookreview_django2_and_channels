@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "webpack_loader",
     "django_tables2",
+    "widget_tweaks",  # tweak the form field rendering in templates
 ]
 
 MIDDLEWARE = [
