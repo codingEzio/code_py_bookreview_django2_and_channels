@@ -1,0 +1,18 @@
+{% load widget_tweaks %}
+
+<div class="form-group">
+    {% comment %}
+        Quote on library 'widget_tweaks': customizing your form elements in a non intrusive way.
+
+        We are simply breaking down the big `form-group` part into this separate file,
+        the actual magic (or uses of 'widget_tweaks') is the `add_class` and `add_error_class`.
+    {% endcomment %}
+    {{ field.label_tag }}
+    {{ field|add_class:"form-control"|add_error_class:"is-invalid" }}
+
+    {% if field.errors %}
+        <div class="invalid-feedback">
+            {{ field.errors }}
+        </div>
+    {% endif %}
+</div>
