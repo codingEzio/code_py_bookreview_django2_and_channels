@@ -16,6 +16,7 @@ selenium = "==3.141.0"
 [packages]
 django = "==2.2.7"
 psycopg2-binary = "==2.8.4"
+django-webpack-loader = "==0.6.0"
 
 [requires]
 python_version = "3.7"

@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     # dev
     "django_extensions",
     "debug_toolbar",
+    "webpack_loader",
 ]
 
 MIDDLEWARE = [
@@ -171,10 +172,24 @@ AUTH_USER_MODEL = "main.User"
 LOGIN_REDIRECT_URL = "/"
 
 
+# Third-party library - django-debug-toolbar
+
+
 def show_toolbar(request):
     return True
 
 
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+}
+
+
+# Third-party library - django-webpack-loader
+
+
+WEBPACK_LOADER = {
+    "DEFAULT": {
+        "BUNDLE_DIR_NAME": "bundles/",
+        "STATS_FILE": os.path.join(BASE_DIR, "webpack-stats.json"),
+    }
 }
