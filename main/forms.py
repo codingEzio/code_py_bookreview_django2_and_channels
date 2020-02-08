@@ -76,6 +76,12 @@ class UserCreationForm(DjangoUserCreationForm):
 
 
 class AuthenticationForm(forms.Form):
+    """
+    Templates we'll be using
+    * main/templates/login.html
+    * main/templates/includes/field.html (newly added to simplifying stuff)
+    """
+
     email = forms.EmailField()
     password = forms.CharField(strip=False, widget=forms.PasswordInput)
 
