@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "debug_toolbar",
     "webpack_loader",
+    "django_tables2",
 ]
 
 MIDDLEWARE = [
@@ -186,10 +187,16 @@ DEBUG_TOOLBAR_CONFIG = {
 
 # Third-party library - django-webpack-loader
 
-
 WEBPACK_LOADER = {
     "DEFAULT": {
         "BUNDLE_DIR_NAME": "bundles/",
         "STATS_FILE": os.path.join(BASE_DIR, "webpack-stats.json"),
     }
 }
+
+
+# Third-party library - django-tables2
+
+# Specify what templates to use when rendering tables
+#  https://django-tables2.readthedocs.io/en/latest/pages/custom-rendering.html
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
