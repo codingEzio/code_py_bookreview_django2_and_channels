@@ -25,14 +25,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # my own
+    # mine
     "main.apps.MainConfig",
     # dev
     "django_extensions",
     "debug_toolbar",
+    # prod
     "webpack_loader",
     "django_tables2",
     "widget_tweaks",  # tweak the form field rendering in templates
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -201,3 +203,23 @@ WEBPACK_LOADER = {
 # Specify what templates to use when rendering tables
 #  https://django-tables2.readthedocs.io/en/latest/pages/custom-rendering.html
 DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
+
+
+# Third-party library - django-tables2
+
+# fmt: off
+REST = "rest_framework"
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        f"{REST}.authentication.SessionAuthentication",
+        f"{REST}.authentication.BasicAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        f"{REST}.permissions.DjangoModelPermissions",
+    ),
+    "DEFAULT_FILTER_BACKENDS": (
+        f"django_filters.{REST}.DjangoFilterBackend",
+    ),
+    "DEFAULT_PAGINATION_CLASS": f"{REST}.pagination.PageNumberPagination",
+    "PAGE_SIZE": 3,
+}
