@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "django_tables2",
     "widget_tweaks",  # tweak the form field rendering in templates
     "rest_framework",
+    "django_filters",  # add this if you're gonna use it with 'rest_framework'
 ]
 
 MIDDLEWARE = [
