@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.urls import path, include
 
 from django.conf import settings
@@ -6,7 +5,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path(route="api-auth/", view=include(arg="rest_framework.urls")),
-    path(route="admin/", view=admin.site.urls),
     path(route="", view=include("main.urls")),
 ]
 
