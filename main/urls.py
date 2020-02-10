@@ -7,6 +7,7 @@ from rest_framework import routers as rest_routers
 from main import views, forms
 from main import models
 from main import endpoints
+from main import admin
 
 app_name = "main"
 
@@ -94,5 +95,17 @@ urlpatterns = [
         route="",
         view=TemplateView.as_view(template_name="home.html"),
         name="index",
+    ),
+    # Admins (for different roles) (ordered by permissions (DESC))
+    path(route="admin/", view=admin.main_admin.urls, name="admin"),
+    path(
+        route="office-admin/",
+        view=admin.central_office_admin.urls,
+        name="office-admin",
+    ),
+    path(
+        route="dispatch-admin/",
+        view=admin.dispatchers_admin.urls,
+        name="dispatch-admin",
     ),
 ]
