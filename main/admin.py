@@ -298,11 +298,9 @@ class ColoredAdminSite(admin.sites.AdminSite):
     def each_context(self, request):
         context = super().each_context(request)
 
-        context["site_header_color"] = getattr(
-            object=self, name="site_header_color", default=None
-        )
+        context["site_header_color"] = getattr(self, "site_header_color", None)
         context["module_caption_color"] = getattr(
-            object=self, name="module_caption_color", default=None
+            self, "module_caption_color", None
         )
 
         return context
