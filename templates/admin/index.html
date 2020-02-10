@@ -1,10 +1,11 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
 {% comment %}
 Copied from here (for modifing)
 >> $VIRTUAL_ENV/lib/python3.*/site-p*/django/contrib/admin/templates/admin/index.html
 {% endcomment %}
 
-{% extends "admin/base_site.html" %}
-{% load i18n static %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
