@@ -7,7 +7,6 @@ from rest_framework import routers as rest_routers
 from main import views, forms
 from main import models
 from main import endpoints
-from main import admin
 
 app_name = "main"
 
