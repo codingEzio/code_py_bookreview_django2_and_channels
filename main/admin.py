@@ -8,6 +8,7 @@ from django.db.models.functions import TruncDay
 from django.db.models import Avg, Count, Min, Sum  # noqa
 from django.urls import path
 from django.template.response import TemplateResponse
+from django import forms
 
 from . import models
 
@@ -287,6 +288,18 @@ class DispatchersOrderAdmin(admin.ModelAdmin):
         return qs.filter(status=models.Order.PAID)
 
 
+""" A form that gonna be used later """
+
+
+class PeriodSelectForm(forms.Form):
+    PERIODS = (
+        (30, "30 days"),
+        (60, "60 days"),
+        (90, "90 days"),
+    )
+    period = forms.TypedChoiceField(choices=PERIODS, coerce=int, required=True)
+
+
 """ Classes that will be used multiple times (for different roles) """
 
 
@@ -319,6 +332,11 @@ class ReportingColoredAdminSite(ColoredAdminSite):
             path(
                 route="orders_per_day/",
                 view=self.admin_view(self.orders_per_day),
+            ),
+            path(
+                route="most_bought_products/",
+                view=self.admin_view(self.most_bought_products),
+                name="most_bought_products",
             ),
         ]
 
@@ -354,9 +372,50 @@ class ReportingColoredAdminSite(ColoredAdminSite):
             request=request, template="orders_per_day.html", context=context
         )
 
+    def most_bought_products(self, request):
+        if request.method == "POST":
+            form = PeriodSelectForm(request.POST)
+
+            if form.is_valid():
+                days = form.cleaned_data["period"]
+                starting_day = datetime.now() - timedelta(days=days)
+
+                data = (
+                    models.OrderLine.objects.filter(
+                        order__date_added__gt=starting_day
+                    )
+                    .values("product__name")
+                    .annotate(c=Count("id"))
+                )
+
+                logger.info(msg=f"most_bought_products query: {data.query}")
+
+                labels = [x["product__name"] for x in data]
+                values = [x["c"] for x in data]
+
+        else:
+            form = PeriodSelectForm()
+            labels = None
+            values = None
+
+        context = dict(
+            self.each_context(request),
+            title="Most bought products",
+            form=form,
+            labels=labels,
+            values=values,
+        )
+
+        return TemplateResponse(
+            request=request,
+            template="most_bought_products.html",
+            context=context,
+        )
+
     def index(self, request, extra_context=None):
         reporting_pages = [
-            {"name": "Orders per day", "link": "orders_per_day/"}
+            {"name": "Orders per day", "link": "orders_per_day/"},
+            {"name": "Most bought products", "link": "most_bought_products/"},
         ]
 
         if not extra_context:
