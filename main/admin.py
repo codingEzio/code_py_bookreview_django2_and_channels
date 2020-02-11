@@ -16,6 +16,27 @@ from . import models
 logger = logging.getLogger(name=__name__)
 
 
+""" The "actions" for admin site """
+
+
+def make_active(self, request, queryset):
+    queryset.update(active=True)
+
+
+def make_inactive(self, request, queryset):
+    """
+    Basically it's like a soft-delete almost for any Django ORM objects.
+    """
+    queryset.update(active=False)
+
+
+make_active.short_description = "Mark selected item as active"
+make_inactive.short_description = "Mark selected item as inactive"
+
+
+""" The generic admin sites """
+
+
 class UserAdmin(DjangoUserAdmin):
     fieldsets = (
         (None, {"fields": ("email", "password")}),
@@ -57,6 +78,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
     autocomplete_fields = ("tags",)
+    actions = [make_active, make_inactive]
 
     def get_readonly_fields(self, request, obj=None):
         """
