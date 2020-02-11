@@ -22,12 +22,19 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    import debug_toolbar
-
     urlpatterns += static(
         prefix=settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
     )
 
-    urlpatterns += [
-        path("__debug__/", include(debug_toolbar.urls)),
-    ]
+
+# Reference:
+#   https://github.com/bernardopires/django-tenant-schemas/issues/222
+# Explanation:
+#   Well, normally this should be placed inside the `if settings.DEBUG`, but it
+#   seems like the position of this AFFECT one of my test (test_admin.py), it
+#   indeed would pass after I modified the URL patterns like this right now :P
+import debug_toolbar  # noqa
+
+urlpatterns += [
+    path("__debug__/", include(debug_toolbar.urls)),
+]
