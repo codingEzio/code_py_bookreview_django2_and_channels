@@ -327,6 +327,10 @@ class ReportingColoredAdminSite(ColoredAdminSite):
     def orders_per_day(self, request):
         starting_day = datetime.now() - timedelta(days=180)
 
+        # Notes on this long expression:
+        # 1. Use `str(order_data`.query)` to get the actual SQL code
+        # 2. TruncDay here is simply used to "chunk down" the precision :)
+        # 3. The `.values` behaves just like the one for dict (a list of dicts)
         order_data = (
             models.Order.objects.filter(date_added__gt=starting_day)
             .annotate(day=TruncDay("date_added"))
@@ -334,6 +338,8 @@ class ReportingColoredAdminSite(ColoredAdminSite):
             .annotate(c=Count("id"))
         )
 
+        # => labels: [ '2020-02-07' ]
+        # => values: 2  (the amount of orders in THAT day)
         labels = [x["day"].strftime("%Y-%m-%d") for x in order_data]
         values = [x["c"] for x in order_data]
 
