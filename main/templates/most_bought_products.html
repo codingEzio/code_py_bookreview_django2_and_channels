@@ -37,7 +37,13 @@
                     scales: {
                         yAxes: [{
                             ticks: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                // https://github.com/chartjs/Chart.js/issues/2801
+                                autoSkip: false
                             }
                         }]
                     }
