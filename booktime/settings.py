@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "widget_tweaks",  # tweak the form field rendering in templates
     "rest_framework",
     "django_filters",  # add this if you're gonna use it with 'rest_framework'
+    "channels",
 ]
 
 MIDDLEWARE = [
@@ -223,4 +224,24 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PAGINATION_CLASS": f"{REST}.pagination.PageNumberPagination",
     "PAGE_SIZE": 3,
+}
+
+
+# Third-party library - channels
+
+ASGI_APPLICATION = "booktime.routing.application"  # DIR.FILE.ROUTE_INSTANCE
+
+
+# Third-party library - channels-redis
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [
+                os.getenv("REDIS_URL"),
+                os.getenv("REDIS_PORT")
+            ],
+        }
+    }
 }
