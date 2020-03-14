@@ -1,5 +1,5 @@
 [flake8]
 ignore = W503
-max-line-length = 84
+max-line-length = 79
 exclude = env/*
 max-complexity = 10
