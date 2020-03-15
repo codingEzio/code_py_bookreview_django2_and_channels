@@ -81,6 +81,11 @@ urlpatterns = [
     path(route="api/", view=include(router.urls)),
     # Base
     path(
+        route="customer-service/<int:order_id>/",
+        view=views.room,
+        name="customer_service_chat",
+    ),
+    path(
         route="contact-us/",
         view=views.ContactUsView.as_view(),
         name="contact_us",
