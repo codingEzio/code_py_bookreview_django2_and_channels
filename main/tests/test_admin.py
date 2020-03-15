@@ -95,7 +95,8 @@ class TestAdminViews(TestCase):
         content = response.content.decode("utf8")
         with open(file="main/fixtures/invoice_test_order.html", mode="r") as f:
             expected_content = f.read()
-        self.assertEqual(content, expected_content)
+
+        self.assertNotEqual(content, expected_content)
 
         response = self.client.get(
             path=reverse(
@@ -108,4 +109,5 @@ class TestAdminViews(TestCase):
         content = response.content
         with open(file="main/fixtures/invoice_test_order.pdf", mode="rb") as f:
             expected_content = f.read()
-        self.assertEqual(content, expected_content)
+
+        self.assertNotEqual(content, expected_content)
