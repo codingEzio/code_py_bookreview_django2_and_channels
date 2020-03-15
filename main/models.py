@@ -277,6 +277,10 @@ class Order(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     status = models.IntegerField(choices=STATUSES, default=NEW)
 
+    last_spoken_to = models.ForeignKey(
+        to=User, null=True, related_name="cs_chats", on_delete=models.SET_NULL
+    )
+
     billing_name = models.CharField(max_length=60)
     billing_address1 = models.CharField(max_length=60)
     billing_address2 = models.CharField(max_length=60, blank=True)
