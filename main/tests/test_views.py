@@ -209,11 +209,11 @@ class TestPage(TestCase):
         )
 
         self.client.force_login(user=user1)
-        response = self.client.get(
+        self.client.get(
             path=reverse(viewname=self.URL_ADD_TO_BASKET),
             data={"product_id": prod1.id},
         )
-        response = self.client.get(
+        self.client.get(
             path=reverse(viewname=self.URL_ADD_TO_BASKET),
             data={"product_id": prod1.id},
         )
@@ -223,7 +223,7 @@ class TestPage(TestCase):
             models.BasketLine.objects.filter(basket__user=user1).count(), 1
         )
 
-        response = self.client.get(
+        self.client.get(
             path=reverse(viewname=self.URL_ADD_TO_BASKET),
             data={"product_id": prod2.id},
         )
@@ -248,11 +248,11 @@ class TestPage(TestCase):
             basket=basket, product=prod1, quantity=2
         )
 
-        response = self.client.get(
+        self.client.get(
             path=reverse(viewname=self.URL_ADD_TO_BASKET),
             data={"product_id": prod2.id},
         )
-        response = self.client.post(
+        self.client.post(
             path=reverse(viewname=self.URL_LOGIN),
             data={
                 "email": self.TEST_SIGNUP_EMAIL,

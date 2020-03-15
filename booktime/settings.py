@@ -234,10 +234,13 @@ ASGI_APPLICATION = "booktime.routing.application"  # DIR.FILE.ROUTE_INSTANCE
 
 # Third-party library - channels-redis
 
+# We use Redis to pass messages between different instances of the running
+# Django application. Of course, it also enable us to do 'message passing'
+# between instances running on different machines or on a single server :)
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
             "hosts": [
                 os.getenv("REDIS_URL"),
                 os.getenv("REDIS_PORT")

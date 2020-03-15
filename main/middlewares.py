@@ -23,14 +23,14 @@ def basket_middleware(get_response):
             try:
                 basket = models.Basket.objects.get(id=basket_id)
                 request.basket = basket
-            except Exception as err:
+            except Exception:
 
                 try:
                     basket = models.Basket.objects.get(
                         user=user, status=models.Basket.OPEN
                     )
                     request.basket = basket
-                except Exception as err:
+                except Exception:
                     del request.session["basket_id"]
         else:
             try:
@@ -38,7 +38,7 @@ def basket_middleware(get_response):
                     user=user, status=models.Basket.OPEN
                 )
                 request.basket = basket
-            except Exception as err:
+            except Exception:
                 request.basket = None
 
         response = get_response(request)
