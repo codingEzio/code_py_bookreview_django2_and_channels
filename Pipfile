@@ -20,7 +20,7 @@ WeasyPrint = "==0.42.3"
 [packages]
 django = "==2.2.7"
 psycopg2-binary = "==2.8.4"
-djangorestframework = "==3.11.0"
+djangorestframework = "==3.11.2"
 django-webpack-loader = "==0.6.0"
 django-tables2 = "==2.2.1"
 django-filter = "==2.2.0"
